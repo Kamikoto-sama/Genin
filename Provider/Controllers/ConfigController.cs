@@ -4,7 +4,7 @@ using Provider.Services;
 
 namespace Provider.Controllers;
 
-[Route("api/{envName}/configs")]
+[Route("api/{groupName}/configs")]
 public class ConfigController : Controller
 {
     private readonly ConfigService configService;
@@ -15,30 +15,30 @@ public class ConfigController : Controller
     }
 
     [HttpPost("add")]
-    public async Task<ActionResult> Add(string envName, [FromBody] AddConfigDto[] dtos)
+    public async Task<ActionResult> Add(string groupName, [FromBody] AddConfigDto[] dtos)
     {
-        await configService.AddAsync(envName, dtos);
+        await configService.AddAsync(groupName, dtos);
         return Ok();
     }
 
     [HttpPost("updateValue")]
-    public async Task<ActionResult> UpdateValue(string envName, [FromBody] AddConfigDto dto)
+    public async Task<ActionResult> UpdateValue(string groupName, [FromBody] AddConfigDto dto)
     {
-        await configService.UpdateValueAsync(envName, dto);
+        await configService.UpdateValueAsync(groupName, dto);
         return Ok();
     }
 
     [HttpGet]
-    public async Task<ActionResult> Get(string envName, [FromBody] string[] keys)
+    public async Task<ActionResult> Get(string groupName, [FromBody] string[] keys)
     {
-        var configs = await configService.GetAsync(envName, keys);
+        var configs = await configService.GetAsync(groupName, keys);
         return Ok(configs);
     }
 
     [HttpPost("delete")]
-    public async Task<ActionResult> Delete(string envName, [FromBody] string[] keys)
+    public async Task<ActionResult> Delete(string groupName, [FromBody] string[] keys)
     {
-        await configService.DeleteAsync(envName, keys);
+        await configService.DeleteAsync(groupName, keys);
         return Ok();
     }
 }

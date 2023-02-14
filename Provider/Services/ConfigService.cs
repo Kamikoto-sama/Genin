@@ -13,10 +13,10 @@ public class ConfigService
         this.dbContext = dbContext;
     }
 
-    public async Task AddAsync(string envName, IEnumerable<AddConfigDto> configDtos)
+    public async Task AddAsync(string groupName, IEnumerable<AddConfigDto> configDtos)
     {
-        var env = await dbContext.FindEnvAsync(envName);
-        if (env == null)
+        var group = await dbContext.FindGroupAsync(groupName);
+        if (group == null)
             return;
 
         var configs = configDtos.Select(x => new ConfigModel
@@ -25,57 +25,57 @@ public class ConfigService
             Value = x.Value
         });
 
-        env.Configs.AddRange(configs);
+        group.Configs.AddRange(configs);
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<ConfigDto[]> GetAsync(string envName, string[] keys)
+    public async Task<ConfigDto[]> GetAsync(string groupName, string[] keys)
     {
-        var configs = new Dictionary<string, (ConfigModel config, string envName)>();
+        var configs = new Dictionary<string, (ConfigModel config, string groupName)>();
         keys = keys.Select(x => x.Replace("/", ".") + ".*").ToArray();
         do
         {
-            var env = await dbContext.FindConfigsAsync(envName, keys);
-            if (env == null)
+            var group = await dbContext.FindConfigsAsync(groupName, keys);
+            if (group == null)
                 break;
 
-            foreach (var config in env.Configs)
-                configs.TryAdd(config.Key, (config, env.Name));
+            foreach (var config in group.Configs)
+                configs.TryAdd(config.Key, (config, group.Name));
 
-            if (env.Parent == null)
+            if (group.Parent == null)
                 break;
 
-            envName = env.Parent.Name;
+            groupName = group.Parent.Name;
         } while (configs.Count < keys.Length);
 
         return configs.Select(x => new ConfigDto
         {
             Key = x.Key.Replace(".", "/"),
             Value = x.Value.config.Value,
-            EnvironmentName = x.Value.envName
+            GroupName = x.Value.groupName
         }).ToArray();
     }
 
-    public async Task UpdateValueAsync(string envName, AddConfigDto configDto)
+    public async Task UpdateValueAsync(string groupName, AddConfigDto configDto)
     {
         var query = configDto.Key.Replace("/", ".");
-        var env = await dbContext.FindConfigsAsync(envName, query);
-        if (env == null || env.Configs.Count != 1)
+        var group = await dbContext.FindConfigsAsync(groupName, query);
+        if (group == null || group.Configs.Count != 1)
             return;
 
-        var config = env.Configs.Single();
+        var config = group.Configs.Single();
         config.Value = configDto.Value;
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(string envName, string[] keys)
+    public async Task DeleteAsync(string groupName, string[] keys)
     {
         keys = keys.Select(x => x.Replace("/", ".")).ToArray();
-        var env = await dbContext.FindConfigsAsync(envName, keys);
-        if (env == null)
+        var group = await dbContext.FindConfigsAsync(groupName, keys);
+        if (group == null)
             return;
 
-        env.Configs.Clear();
+        group.Configs.Clear();
         await dbContext.SaveChangesAsync();
     }
 }

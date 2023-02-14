@@ -28,10 +28,10 @@ internal class Program
     {
         var services = appBuilder.Services;
 
-        var connectionString = appBuilder.Configuration.GetConnectionString("postgres")!;
+        var connectionString = appBuilder.Configuration.GetConnectionString("postgres");
         services.AddDbContext<AppDbContext>(builder => builder.UseNpgsql(connectionString));
 
-        services.AddScoped<EnvironmentService>();
+        services.AddScoped<GroupService>();
         services.AddScoped<ConfigService>();
 
         services.AddControllers();
