@@ -1,4 +1,4 @@
-﻿namespace Utils;
+﻿namespace Common;
 
 public static class EnumerableExtensions
 {

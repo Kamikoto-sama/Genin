@@ -1,6 +1,11 @@
-﻿using Provider.Data;
+﻿using Common;
+using Common.Results;
+using FluentResults;
+using Microsoft.EntityFrameworkCore;
+using Provider.Data;
 using Provider.Data.Models;
-using Provider.Dto;
+using Provider.Dto.Configs;
+using Provider.Mappings;
 
 namespace Provider.Services;
 
@@ -13,34 +18,33 @@ public class ConfigService
         this.dbContext = dbContext;
     }
 
-    public async Task AddAsync(string groupName, IEnumerable<AddConfigDto> configDtos)
+    public async Task<Result> AddAsync(string groupName, IEnumerable<AddConfigDto> configDtos)
     {
-        var group = await dbContext.FindGroupAsync(groupName);
-        if (group == null)
-            return;
+        var configs = configDtos.Select(ConfigMapper.ToConfigModel).ToArray();
 
-        var configs = configDtos.Select(x => new ConfigModel
-        {
-            Key = x.Key.Replace("/", "."),
-            Value = x.Value
-        });
+        var group = await dbContext.LoadConfigsByPrefix(groupName, configs.Select(x => x.Key.ToString()));
+        if (group == null)
+            return ConfigError.GroupNotFound();
+        if (group.Configs.Count > 0)
+            return ConfigError.KeysConflict(group.Configs.Select(x => x.Key));
 
         group.Configs.AddRange(configs);
         await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
     }
 
-    public async Task<ConfigDto[]> GetAsync(string groupName, string[] keys)
+    public async Task<Result<ConfigDto[]>> GetAsync(string groupName, string[] keys)
     {
-        var configs = new Dictionary<string, (ConfigModel config, string groupName)>();
-        keys = keys.Select(x => x.Replace("/", ".") + ".*").ToArray();
+        var configs = new Dictionary<string, ConfigDto>();
         do
         {
-            var group = await dbContext.FindConfigsAsync(groupName, keys);
+            var group = await dbContext.LoadConfigsByPrefix(groupName, keys);
             if (group == null)
-                break;
+                return ConfigError.GroupNotFound();
 
             foreach (var config in group.Configs)
-                configs.TryAdd(config.Key, (config, group.Name));
+                configs.TryAdd(config.Key, config.ToConfigDto(group));
 
             if (group.Parent == null)
                 break;
@@ -48,34 +52,47 @@ public class ConfigService
             groupName = group.Parent.Name;
         } while (configs.Count < keys.Length);
 
-        return configs.Select(x => new ConfigDto
-        {
-            Key = x.Key.Replace(".", "/"),
-            Value = x.Value.config.Value,
-            GroupName = x.Value.groupName
-        }).ToArray();
+        return configs.Values.ToArray();
     }
 
-    public async Task UpdateValueAsync(string groupName, AddConfigDto configDto)
+    public async Task<Result> UpdateValueAsync(string groupName, UpdateConfigDto configDto)
     {
-        var query = configDto.Key.Replace("/", ".");
-        var group = await dbContext.FindConfigsAsync(groupName, query);
-        if (group == null || group.Configs.Count != 1)
-            return;
+        var keys = configDto.Key.Replace("/", ".");
+        var group = await dbContext.LoadConfigs(groupName, keys);
+        if (group == null)
+            return ConfigError.GroupNotFound();
 
         var config = group.Configs.Single();
         config.Value = configDto.Value;
         await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
     }
 
-    public async Task DeleteAsync(string groupName, string[] keys)
+    public async Task<Result> DeleteAsync(string groupName, string[] keys)
     {
         keys = keys.Select(x => x.Replace("/", ".")).ToArray();
-        var group = await dbContext.FindConfigsAsync(groupName, keys);
+        var group = await dbContext.LoadConfigs(groupName, keys);
         if (group == null)
-            return;
+            return ConfigError.GroupNotFound();
 
         group.Configs.Clear();
         await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
     }
+}
+
+public class ConfigError
+{
+    public enum Code
+    {
+        GroupNotFound = 1,
+        KeysConflict
+    }
+
+    public static Result GroupNotFound() => ResultHelper.InvalidOperation(Code.GroupNotFound);
+
+    public static Result KeysConflict(IEnumerable<LTree> storedKeys) =>
+        ResultHelper.InvalidOperation(Code.KeysConflict, $"Existing keys: {storedKeys.ToStringJoin()}");
 }

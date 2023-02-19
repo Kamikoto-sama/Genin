@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Results;
+using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using Provider.Data;
 using Provider.Data.Models;
+using Provider.Mappings;
 
 namespace Provider.Services;
 
@@ -13,47 +16,97 @@ public class GroupService
         this.dbContext = dbContext;
     }
 
-    public async Task<int> CreateAsync(string groupName, int? parentId)
+    public async Task<Result<int>> CreateAsync(string groupName, int? parentId)
     {
-        GroupModel? parent = null;
-        if (parentId != null)
-            parent = await dbContext.Groups.FindAsync(parentId);
+        var group = await dbContext.FindGroupAsync(groupName);
+        if (group != null)
+            return GroupError.AlreadyExists();
 
-        var group = new GroupModel
-        {
-            Name = groupName,
-            Parent = parent
-        };
+        var parentResult = await GetParentAsync(parentId);
+        if (parentResult.IsFailed)
+            return parentResult.ToResult();
+
+        group = GroupMapper.ToGroupModel(groupName, parentResult.Value);
         var entry = await dbContext.Groups.AddAsync(group);
         await dbContext.SaveChangesAsync();
 
         return entry.Entity.Id;
     }
 
-    public async Task SetParentAsync(string groupName, int? parentId)
+    public async Task<Result> SetParentAsync(string groupName, int? parentId)
+    {
+        var parentResult = await GetParentAsync(parentId);
+        if (parentResult.IsFailed)
+            return parentResult.ToResult();
+
+        var group = await dbContext.FindGroupAsync(groupName);
+        if (group == null)
+            return GroupError.NotFound();
+
+        group.Parent = parentResult.Value;
+        await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
+    }
+
+    private async Task<Result<GroupModel?>> GetParentAsync(int? parentId)
     {
         GroupModel? parent = null;
-        if (parentId != null)
-            parent = await dbContext.Groups.FindAsync(parentId);
+        if (parentId == null)
+            return parent;
 
-        var group = await dbContext.FindGroupAsync(groupName);
-        group!.Parent = parent;
-        await dbContext.SaveChangesAsync();
+        parent = await dbContext.Groups.FindAsync(parentId);
+        if (parent == null)
+            return GroupError.ParentNotFound();
+        return parent;
     }
 
-    public async Task<GroupModel?> GetAsync(string groupName) => await dbContext.FindGroupAsync(groupName);
-
-    public async Task UpdateNameAsync(string groupName, string newName)
+    public async Task<Result<GroupModel>> GetAsync(string groupName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
-        group!.Name = newName;
-        await dbContext.SaveChangesAsync();
+        return group == null ? GroupError.NotFound() : group;
     }
 
-    public async Task DeleteAsync(string groupName)
+    public async Task<Result> UpdateNameAsync(string groupName, string newName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
-        dbContext.Groups.Remove(group!);
+        if (group == null)
+            return GroupError.NotFound();
+
+        if (await dbContext.FindGroupAsync(newName) != null)
+            return GroupError.AlreadyExists();
+
+        group.Name = newName;
         await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
     }
+
+    public async Task<Result> DeleteAsync(string groupName)
+    {
+        var group = await dbContext.FindGroupAsync(groupName);
+        if (group == null)
+            return GroupError.NotFound();
+
+        dbContext.Groups.Remove(group);
+        await dbContext.SaveChangesAsync();
+
+        return Result.Ok();
+    }
+}
+
+public class GroupError
+{
+    public enum Code
+    {
+        GroupNotFound = 1,
+        GroupAlreadyExists,
+        ParentNotFound
+    }
+
+    public static Result NotFound() => ResultHelper.NotFound(Code.GroupNotFound);
+
+    public static Result AlreadyExists() => ResultHelper.InvalidOperation(Code.GroupAlreadyExists);
+
+    public static Result ParentNotFound() => ResultHelper.InvalidOperation(Code.ParentNotFound);
 }

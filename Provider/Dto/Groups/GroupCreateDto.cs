@@ -1,4 +1,4 @@
-﻿namespace Provider.Dto;
+﻿namespace Provider.Dto.Groups;
 
 public class GroupCreateDto
 {
