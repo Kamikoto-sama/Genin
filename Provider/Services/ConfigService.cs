@@ -3,7 +3,6 @@ using Common.Results;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Provider.Data;
-using Provider.Data.Models;
 using Provider.Dto.Configs;
 using Provider.Mappings;
 
@@ -18,7 +17,7 @@ public class ConfigService
         this.dbContext = dbContext;
     }
 
-    public async Task<Result> AddAsync(string groupName, IEnumerable<AddConfigDto> configDtos)
+    public async Task<Result> AddAsync(string groupName, IEnumerable<ConfigAddDto> configDtos)
     {
         var configs = configDtos.Select(ConfigMapper.ToConfigModel).ToArray();
 
@@ -55,15 +54,15 @@ public class ConfigService
         return configs.Values.ToArray();
     }
 
-    public async Task<Result> UpdateValueAsync(string groupName, UpdateConfigDto configDto)
+    public async Task<Result> UpdateValueAsync(string groupName, ConfigUpdateDto dto)
     {
-        var keys = configDto.Key.Replace("/", ".");
+        var keys = dto.Key.Replace("/", ".");
         var group = await dbContext.LoadConfigs(groupName, keys);
         if (group == null)
             return ConfigError.GroupNotFound();
 
         var config = group.Configs.Single();
-        config.Value = configDto.Value;
+        config.Value = dto.Value;
         await dbContext.SaveChangesAsync();
 
         return Result.Ok();

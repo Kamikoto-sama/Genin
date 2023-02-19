@@ -16,12 +16,12 @@ public static class ConfigMapper
         };
     }
 
-    public static ConfigModel ToConfigModel(this AddConfigDto configDto)
+    public static ConfigModel ToConfigModel(this ConfigAddDto dto)
     {
         return new ConfigModel
         {
-            Key = configDto.Key.Replace("/", "."),
-            Value = configDto.Value
+            Key = dto.Key.Replace("/", "."),
+            Value = dto.Value
         };
     }
 }

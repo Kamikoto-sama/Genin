@@ -15,12 +15,12 @@ public class ConfigsController : ApiController
     }
 
     [HttpPost("add")]
-    public Task<ActionResult> Add(string groupName, [FromBody] AddConfigDto[] dtos) =>
-        HandleAsync(() => configService.AddAsync(groupName, dtos));
+    public Task<ActionResult> Add(string groupName, [FromBody] ConfigAddDto[] dto) =>
+        HandleAsync(() => configService.AddAsync(groupName, dto));
 
     [HttpPost("updateValue")]
-    public Task<ActionResult> UpdateValue(string groupName, [FromBody] UpdateConfigDto dtos) =>
-        HandleAsync(() => configService.UpdateValueAsync(groupName, dtos));
+    public Task<ActionResult> UpdateValue(string groupName, [FromBody] ConfigUpdateDto dto) =>
+        HandleAsync(() => configService.UpdateValueAsync(groupName, dto));
 
     [HttpGet]
     public Task<ActionResult<ConfigDto[]>> Get(string groupName, [FromBody] string[] keys) =>
