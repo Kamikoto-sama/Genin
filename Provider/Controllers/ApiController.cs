@@ -6,12 +6,14 @@ namespace Provider.Controllers;
 
 public abstract class ApiController : Controller
 {
+    [NonAction]
     public async Task<ActionResult> HandleAsync(Func<Task<Result>> execute)
     {
         var result = await execute();
         return result.IsSuccess ? Ok() : ToActionResult(result);
     }
 
+    [NonAction]
     public async Task<ActionResult<T>> HandleAsync<T>(Func<Task<Result<T>>> execute)
     {
         var result = await execute();
