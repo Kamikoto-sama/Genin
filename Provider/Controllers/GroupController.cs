@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Provider.Dto;
 using Provider.Dto.Groups;
 using Provider.Mappings;
 using Provider.Services;
 
 namespace Provider.Controllers;
 
-[Route("api/group")]
+[Route("api/group/{groupName}")]
 public class GroupController : ApiController
 {
     private readonly GroupService groupService;
@@ -18,26 +17,26 @@ public class GroupController : ApiController
     }
 
     [HttpPost("create")]
-    public Task<ActionResult<int>> Create([FromBody] GroupCreateDto dto) =>
-        HandleAsync(() => groupService.CreateAsync(dto.Name, dto.ParentId));
+    public Task<ActionResult<int>> Create(string groupName, int? parentId) =>
+        HandleAsync(() => groupService.CreateAsync(groupName, parentId));
 
-    [HttpGet("{groupName}")]
+    [HttpGet]
     public Task<ActionResult<GroupDto>> Get(string groupName) =>
         HandleAsync(() => groupService.GetAsync(groupName), GroupMapper.ToGroupDto);
 
-    [HttpPost("{groupName}/updateName")]
+    [HttpPost("updateName")]
     public Task<ActionResult> UpdateName(string groupName, [Required] string newName) =>
         HandleAsync(() => groupService.UpdateNameAsync(groupName, newName));
 
-    [HttpPost("{groupName}/setParent")]
+    [HttpPost("setParent")]
     public Task<ActionResult> SetParent(string groupName, [Required] int parentId) =>
         HandleAsync(() => groupService.SetParentAsync(groupName, parentId));
 
-    [HttpPost("{groupName}/removeParent")]
+    [HttpPost("removeParent")]
     public Task<ActionResult> RemoveParent(string groupName) =>
         HandleAsync(() => groupService.SetParentAsync(groupName, null));
 
-    [HttpPost("{groupName}/delete")]
+    [HttpPost("delete")]
     public Task<ActionResult> Delete(string groupName) =>
         HandleAsync(() => groupService.DeleteAsync(groupName));
 }

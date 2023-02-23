@@ -1,4 +1,6 @@
-﻿using Common.Results;
+﻿using System.Diagnostics.CodeAnalysis;
+using Common;
+using Common.Results;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,29 +8,47 @@ namespace Provider.Controllers;
 
 public abstract class ApiController : Controller
 {
-    [NonAction]
-    public async Task<ActionResult> HandleAsync(Func<Task<Result>> execute)
+    protected async Task<ActionResult> HandleAsync(Func<Task<Result>> execute)
     {
+        if (!ValidateModel(out var validationResult))
+            return validationResult;
+
         var result = await execute();
         return result.IsSuccess ? Ok() : ToActionResult(result);
     }
 
-    [NonAction]
-    public async Task<ActionResult<T>> HandleAsync<T>(Func<Task<Result<T>>> execute)
+    protected async Task<ActionResult<T>> HandleAsync<T>(Func<Task<Result<T>>> execute)
     {
+        if (!ValidateModel(out var validationResult))
+            return validationResult;
+
         var result = await execute();
         return result.IsSuccess ? Ok(result.Value) : ToActionResult(result);
     }
 
-    public async Task<ActionResult<TResult>> HandleAsync<TSource, TResult>(Func<Task<Result<TSource>>> execute, Func<TSource, TResult> mapToDto)
+    private bool ValidateModel([NotNullWhen(false)] out ActionResult? actionResult)
+    {
+        actionResult = default;
+        if (ModelState.IsValid)
+            return true;
+
+        var details = ModelState.Values
+            .SelectMany(x => x.Errors)
+            .Select(x => x.ErrorMessage)
+            .ToStringJoin("; ");
+
+        var result = ResultHelper.InvalidOperation(ModelError.InvalidModel, details);
+        actionResult = ToActionResult(result);
+        return false;
+    }
+
+    protected async Task<ActionResult<TResult>> HandleAsync<TSource, TResult>(Func<Task<Result<TSource>>> execute, Func<TSource, TResult> mapToDto)
     {
         var result = await execute();
         return result.IsSuccess ? Ok(mapToDto(result.Value)) : ToActionResult(result);
     }
 
-    private ActionResult ToActionResult<T>(Result<T> result) => ToActionResult(result.ToResult());
-
-    private ActionResult ToActionResult(Result result)
+    private ActionResult ToActionResult(IResultBase result)
     {
         var error = (ResultError)result.Errors.Single(x => x is ResultError);
         if (error.Type == ResultErrorType.NotFound)
@@ -37,10 +57,14 @@ public abstract class ApiController : Controller
         var problemDetails = new ProblemDetails
         {
             Detail = error.Message,
-            Title = error.Code.ToString(),
             Type = error.Code.ToString()
         };
 
         return BadRequest(problemDetails);
     }
+}
+
+public enum ModelError
+{
+    InvalidModel
 }

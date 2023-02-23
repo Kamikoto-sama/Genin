@@ -22,7 +22,7 @@ public class ConfigsController : ApiController
     public Task<ActionResult> UpdateValue(string groupName, [FromBody] ConfigUpdateDto dto) =>
         HandleAsync(() => configService.UpdateValueAsync(groupName, dto));
 
-    [HttpGet]
+    [HttpPost]
     public Task<ActionResult<ConfigDto[]>> Get(string groupName, [FromBody] string[] keys) =>
         HandleAsync(() => configService.GetAsync(groupName, keys));
 
