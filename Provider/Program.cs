@@ -4,6 +4,8 @@ using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Provider.Data;
 using Provider.Services;
+using Serilog;
+using Serilog.Events;
 
 namespace Provider;
 
@@ -17,12 +19,28 @@ internal class Program
         ConfigureServices(appBuilder);
 
         var app = appBuilder.Build();
+
         ConfigureApp(app);
 
         await app.RunAsync();
     }
 
     private static void ConfigureHost(WebApplicationBuilder appBuilder)
+    {
+        ConfigureAppConfiguration(appBuilder);
+        ConfigureLogging(appBuilder);
+    }
+
+    private static void ConfigureLogging(WebApplicationBuilder appBuilder)
+    {
+        const string template = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+        appBuilder.Host.UseSerilog((_, configuration) => configuration
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+            .WriteTo.Console(outputTemplate: template));
+    }
+
+    private static void ConfigureAppConfiguration(WebApplicationBuilder appBuilder)
     {
         appBuilder.Configuration.AddJsonFile("appsettings.private.json", true);
     }
@@ -47,6 +65,8 @@ internal class Program
 
     private static void ConfigureApp(WebApplication app)
     {
+        app.UseSerilogRequestLogging();
+
         app.UseHttpsRedirection();
 
         app.UseSwagger();
