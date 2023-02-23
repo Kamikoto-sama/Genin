@@ -8,6 +8,10 @@ public class AppDbContext : DbContext
     public required DbSet<GroupModel> Groups { get; init; }
     public required DbSet<ConfigModel> Configs { get; init; }
 
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ConfigureGroupModel(modelBuilder);
