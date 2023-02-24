@@ -1,6 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Provider.Data;
 using Provider.Services;
@@ -57,10 +55,7 @@ internal class Program
 
         services.AddControllers();
         services.AddSwaggerGen();
-        services
-            .AddValidatorsFromAssemblyContaining<Program>()
-            .AddFluentValidationAutoValidation(config => config.DisableDataAnnotationsValidation = true)
-            .AddFluentValidationRulesToSwagger();
+        services.AddValidatorsFromAssemblyContaining<Program>();
     }
 
     private static void ConfigureApp(WebApplication app)

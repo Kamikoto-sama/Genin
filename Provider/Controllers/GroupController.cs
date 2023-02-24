@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Provider.Dto.Groups;
 using Provider.Mappings;
 using Provider.Services;
+using Provider.Validations;
 
 namespace Provider.Controllers;
 
 [Route("api/group/{groupName}")]
+[Validate<GroupNameValidator, string>("groupName")]
 public class GroupController : ApiController
 {
     private readonly GroupService groupService;

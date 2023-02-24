@@ -44,6 +44,9 @@ public abstract class ApiController : Controller
 
     protected async Task<ActionResult<TResult>> HandleAsync<TSource, TResult>(Func<Task<Result<TSource>>> execute, Func<TSource, TResult> mapToDto)
     {
+        if (!ValidateModel(out var validationResult))
+            return validationResult;
+
         var result = await execute();
         return result.IsSuccess ? Ok(mapToDto(result.Value)) : ToActionResult(result);
     }

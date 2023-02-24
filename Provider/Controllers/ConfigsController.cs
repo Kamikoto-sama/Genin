@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Provider.Dto.Configs;
 using Provider.Services;
+using Provider.Validations;
 
 namespace Provider.Controllers;
 
 [Route("api/{groupName}/configs")]
+[Validate<GroupNameValidator, string>("groupName")]
 public class ConfigsController : ApiController
 {
     private readonly ConfigService configService;
@@ -15,6 +17,7 @@ public class ConfigsController : ApiController
     }
 
     [HttpPost("add")]
+    [Validate<ConfigAddValidator, ConfigAddDto[]>(nameof(dto))]
     public Task<ActionResult> Add(string groupName, [FromBody] ConfigAddDto[] dto) =>
         HandleAsync(() => configService.AddAsync(groupName, dto));
 
@@ -22,7 +25,7 @@ public class ConfigsController : ApiController
     public Task<ActionResult> UpdateValue(string groupName, [FromBody] ConfigUpdateDto dto) =>
         HandleAsync(() => configService.UpdateValueAsync(groupName, dto));
 
-    [HttpPost]
+    [HttpGet, HttpPost]
     public Task<ActionResult<ConfigDto[]>> Get(string groupName, [FromBody] string[] keys) =>
         HandleAsync(() => configService.GetAsync(groupName, keys));
 
