@@ -1,11 +1,10 @@
 ﻿using Common.Results;
 using FluentResults;
-using Microsoft.EntityFrameworkCore;
-using Provider.Data;
-using Provider.Data.Models;
-using Provider.Mappings;
+using Provider.Api.Data;
+using Provider.Api.Data.Models;
+using Provider.Api.Mappings;
 
-namespace Provider.Services;
+namespace Provider.Api.Services;
 
 public class GroupService
 {

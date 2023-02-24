@@ -1,11 +1,11 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Provider.Data;
-using Provider.Services;
+using Provider.Api.Data;
+using Provider.Api.Services;
 using Serilog;
 using Serilog.Events;
 
-namespace Provider;
+namespace Provider.Api;
 
 internal class Program
 {

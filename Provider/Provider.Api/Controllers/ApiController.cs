@@ -4,7 +4,7 @@ using Common.Results;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Provider.Controllers;
+namespace Provider.Api.Controllers;
 
 public abstract class ApiController : Controller
 {

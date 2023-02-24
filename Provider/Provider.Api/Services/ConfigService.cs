@@ -2,11 +2,11 @@
 using Common.Results;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
-using Provider.Data;
+using Provider.Api.Data;
+using Provider.Api.Mappings;
 using Provider.Dto.Configs;
-using Provider.Mappings;
 
-namespace Provider.Services;
+namespace Provider.Api.Services;
 
 public class ConfigService
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace Provider.Validations;
+namespace Provider.Api.Validations;
 
 public class GroupNameValidator : AbstractValidator<string>
 {

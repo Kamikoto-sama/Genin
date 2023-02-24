@@ -1,7 +1,7 @@
-﻿using Provider.Data.Models;
+﻿using Provider.Api.Data.Models;
 using Provider.Dto.Configs;
 
-namespace Provider.Mappings;
+namespace Provider.Api.Mappings;
 
 public static class ConfigMapper
 {

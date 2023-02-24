@@ -1,12 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider", "Provider\Provider.csproj", "{A26E5355-B533-4645-BC08-EF2A6280BBC2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{5F119C6A-A673-4CC2-BA19-CAC0C11DE591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Dto", "Provider.Dto\Provider.Dto.csproj", "{C00F92F1-CFDF-4D2B-A2AA-AA5131ED889C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Provider", "Provider", "{6319324F-51B2-4D1F-8319-0F4419257213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Client", "Provider.Client\Provider.Client.csproj", "{9BF5AC6C-D0F8-4B62-9C0E-6DFAEE210BB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Api", "Provider\Provider.Api\Provider.Api.csproj", "{B0470AD5-0913-4E3C-991A-798F26419B19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Client", "Provider\Provider.Client\Provider.Client.csproj", "{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Dto", "Provider\Provider.Dto\Provider.Dto.csproj", "{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,21 +16,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A26E5355-B533-4645-BC08-EF2A6280BBC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A26E5355-B533-4645-BC08-EF2A6280BBC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A26E5355-B533-4645-BC08-EF2A6280BBC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A26E5355-B533-4645-BC08-EF2A6280BBC2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F119C6A-A673-4CC2-BA19-CAC0C11DE591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F119C6A-A673-4CC2-BA19-CAC0C11DE591}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F119C6A-A673-4CC2-BA19-CAC0C11DE591}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F119C6A-A673-4CC2-BA19-CAC0C11DE591}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C00F92F1-CFDF-4D2B-A2AA-AA5131ED889C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C00F92F1-CFDF-4D2B-A2AA-AA5131ED889C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C00F92F1-CFDF-4D2B-A2AA-AA5131ED889C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C00F92F1-CFDF-4D2B-A2AA-AA5131ED889C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9BF5AC6C-D0F8-4B62-9C0E-6DFAEE210BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BF5AC6C-D0F8-4B62-9C0E-6DFAEE210BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BF5AC6C-D0F8-4B62-9C0E-6DFAEE210BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BF5AC6C-D0F8-4B62-9C0E-6DFAEE210BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0470AD5-0913-4E3C-991A-798F26419B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0470AD5-0913-4E3C-991A-798F26419B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0470AD5-0913-4E3C-991A-798F26419B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0470AD5-0913-4E3C-991A-798F26419B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B0470AD5-0913-4E3C-991A-798F26419B19} = {6319324F-51B2-4D1F-8319-0F4419257213}
+		{98C4A3B9-30FF-4D02-B19B-9C9025A4FCC7} = {6319324F-51B2-4D1F-8319-0F4419257213}
+		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876} = {6319324F-51B2-4D1F-8319-0F4419257213}
 	EndGlobalSection
 EndGlobal

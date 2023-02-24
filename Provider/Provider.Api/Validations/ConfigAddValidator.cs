@@ -3,7 +3,7 @@ using Common;
 using FluentValidation;
 using Provider.Dto.Configs;
 
-namespace Provider.Validations;
+namespace Provider.Api.Validations;
 
 public class ConfigAddValidator : AbstractValidator<ConfigAddDto[]>
 {

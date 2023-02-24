@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Provider.Data;
-using Provider.Data.Models;
+using Provider.Api.Data;
+using Provider.Api.Data.Models;
 
-namespace Provider.Services;
+namespace Provider.Api.Services;
 
 public static class GroupQueries
 {

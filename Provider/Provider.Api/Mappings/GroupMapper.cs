@@ -1,7 +1,7 @@
-﻿using Provider.Data.Models;
+﻿using Provider.Api.Data.Models;
 using Provider.Dto.Groups;
 
-namespace Provider.Mappings;
+namespace Provider.Api.Mappings;
 
 public static class GroupMapper
 {
@@ -21,11 +21,13 @@ public static class GroupMapper
         {
             Id = groupModel.Id,
             Name = groupModel.Name,
-            Parent = parent == null ? null : new GroupDto
-            {
-                Id = parent.Id,
-                Name = parent.Name
-            }
+            Parent = parent == null
+                ? null
+                : new GroupDto
+                {
+                    Id = parent.Id,
+                    Name = parent.Name
+                }
         };
     }
 }

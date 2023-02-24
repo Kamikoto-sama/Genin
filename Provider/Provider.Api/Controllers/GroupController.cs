@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Provider.Api.Mappings;
+using Provider.Api.Services;
+using Provider.Api.Validations;
 using Provider.Dto.Groups;
-using Provider.Mappings;
-using Provider.Services;
-using Provider.Validations;
 
-namespace Provider.Controllers;
+namespace Provider.Api.Controllers;
 
 [Route("api/group/{groupName}")]
 [Validate<GroupNameValidator, string>("groupName")]

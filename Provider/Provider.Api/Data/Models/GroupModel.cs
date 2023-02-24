@@ -1,4 +1,4 @@
-﻿namespace Provider.Data.Models;
+﻿namespace Provider.Api.Data.Models;
 
 public record GroupModel
 {

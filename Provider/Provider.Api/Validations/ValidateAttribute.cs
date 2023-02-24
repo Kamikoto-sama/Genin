@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Provider.Validations;
+namespace Provider.Api.Validations;
 
 public class ValidateAttribute<TValidator, TDto> : ActionFilterAttribute where TValidator : AbstractValidator<TDto>
 {
