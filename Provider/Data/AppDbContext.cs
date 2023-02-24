@@ -35,6 +35,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<GroupModel>()
             .HasOne(group => group.Parent)
             .WithMany()
-            .IsRequired(false);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
