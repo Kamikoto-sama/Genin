@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Common;
 using Common.Results;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Provider.Api.Controllers;
+namespace Common.Api;
 
-public abstract class ApiController : Controller
+[ApiController]
+public abstract class ApiController : ControllerBase
 {
     protected async Task<ActionResult> HandleAsync(Func<Task<Result>> execute)
     {

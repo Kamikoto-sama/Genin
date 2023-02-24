@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Common.Api;
 using Microsoft.AspNetCore.Mvc;
 using Provider.Api.Mappings;
 using Provider.Api.Services;

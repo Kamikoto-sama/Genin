@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common.Api;
+using Microsoft.AspNetCore.Mvc;
 using Provider.Api.Services;
 using Provider.Api.Validations;
 using Provider.Dto.Configs;

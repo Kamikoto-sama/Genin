@@ -9,9 +9,9 @@ namespace Provider.Api;
 
 internal class Program
 {
-    private static async Task Main()
+    private static async Task Main(string[] args)
     {
-        var appBuilder = WebApplication.CreateBuilder();
+        var appBuilder = WebApplication.CreateBuilder(args);
 
         ConfigureHost(appBuilder);
         ConfigureServices(appBuilder);
