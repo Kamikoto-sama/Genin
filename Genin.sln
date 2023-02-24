@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Client", "Provider
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider.Dto", "Provider\Provider.Dto\Provider.Dto.csproj", "{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manager", "Manager\Manager.csproj", "{96DE3A9B-AF01-4963-B4C5-28ED16E80CBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61B8B9E8-AF0B-4A3D-B71D-0970C2D21876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96DE3A9B-AF01-4963-B4C5-28ED16E80CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96DE3A9B-AF01-4963-B4C5-28ED16E80CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96DE3A9B-AF01-4963-B4C5-28ED16E80CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96DE3A9B-AF01-4963-B4C5-28ED16E80CBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B0470AD5-0913-4E3C-991A-798F26419B19} = {6319324F-51B2-4D1F-8319-0F4419257213}
