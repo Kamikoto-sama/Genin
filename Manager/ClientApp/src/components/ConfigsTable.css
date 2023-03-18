@@ -1,0 +1,12 @@
+﻿.configsTable {
+    width: 100%;
+}
+
+.configNameLink {
+    color: inherit;
+}
+
+.configNameLink:hover {
+    color: inherit;
+    text-decoration: underline;
+}
