@@ -1,8 +1,8 @@
 ﻿import React, {useState} from "react";
-import {Divider, Input, Modal, Select, Space, Typography} from "antd";
-import {JsonViewer} from "@textea/json-viewer";
+import {Divider, Modal, Select, Space, Typography} from "antd";
+import ConfigValueEditor, {ConfigValueFormat} from "./ConfigValueEditor";
 
-const {Text} = Typography;
+const Text = Typography.Text;
 
 const testJsonValue = JSON.stringify({
     position: {
@@ -18,32 +18,15 @@ const testJsonValue = JSON.stringify({
     ]
 });
 
-type ConfigValueFormat = 'Plain' | 'JSON' | 'YAML';
 const formats = [
-    {value: 'Plain', label: 'Plain'},
+    {value: 'Plain text', label: 'Plain text'},
     {value: 'JSON', label: 'JSON'},
     {value: 'YAML', label: 'YAML'},
 ]
 
-function ConfigValueEditor({format, value}: { format: ConfigValueFormat, value?: string }) {
-    const placeholder = `Enter ${format} value (can be empty)`;
-    switch (format) {
-        case 'Plain':
-            return <Input.TextArea placeholder={placeholder} defaultValue={value} autoSize/>
-        case 'JSON':
-            return <JsonViewer value={JSON.parse(value ?? '')} theme={"dark"}/>;
-    }
-    return (
-        <>
-            <Text type="warning" strong>Uknown format: </Text>
-            <Text code>{format}</Text>
-        </>
-    )
-}
-
 function EditConfigValueModal({open, onClose, config}: Props) {
-
-    const [format, setFormat] = useState<ConfigValueFormat>('Plain')
+    const [format, setFormat] = useState<ConfigValueFormat>('Plain text')
+    const [configValue, setConfigValue] = useState<string>(testJsonValue)
 
     function onFormat(value: ConfigValueFormat) {
         setFormat(value)
@@ -68,7 +51,7 @@ function EditConfigValueModal({open, onClose, config}: Props) {
                     <Text strong>Format:</Text>
                     <Select style={{minWidth: '100px'}} options={formats} value={format} onChange={onFormat}/>
                 </Space>
-                <ConfigValueEditor format={format} value={testJsonValue}/>
+                <ConfigValueEditor format={format} value={configValue} onChange={setConfigValue}/>
             </Space>
         </Modal>
     )
