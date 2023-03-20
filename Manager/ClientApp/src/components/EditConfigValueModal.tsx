@@ -4,20 +4,6 @@ import ConfigValueEditor, {ConfigValueFormat} from "./ConfigValueEditor";
 
 const Text = Typography.Text;
 
-const testJsonValue = JSON.stringify({
-    position: {
-        x: 10,
-        y: 20
-    },
-    valid: true,
-    topology: [
-        {
-            name: "index1",
-            address: "http://localhost"
-        }
-    ]
-});
-
 const formats = [
     {value: 'Plain text', label: 'Plain text'},
     {value: 'JSON', label: 'JSON'},
@@ -26,7 +12,7 @@ const formats = [
 
 function EditConfigValueModal({open, onClose, config}: Props) {
     const [format, setFormat] = useState<ConfigValueFormat>('Plain text')
-    const [configValue, setConfigValue] = useState<string>(testJsonValue)
+    const [configValue, setConfigValue] = useState<string>(config.value)
 
     function onFormat(value: ConfigValueFormat) {
         setFormat(value)
@@ -38,6 +24,8 @@ function EditConfigValueModal({open, onClose, config}: Props) {
             open={open}
             onCancel={onClose}
             okText="Save"
+            okButtonProps={{disabled: true}}
+            destroyOnClose={true}
         >
             <div>
                 <Text strong>Zone: </Text>
@@ -66,6 +54,7 @@ interface Props {
 interface ConfigInfo {
     zone: string;
     key: string;
+    value: string;
 }
 
 export default EditConfigValueModal;
