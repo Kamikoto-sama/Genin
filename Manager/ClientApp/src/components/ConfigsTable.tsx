@@ -1,74 +1,41 @@
-﻿import {Button, Modal, Table} from "antd";
-import React, {useState} from "react";
+﻿import {Button, Dropdown, Table} from "antd";
+import React from "react";
 import type {ColumnsType} from 'antd/es/table';
 import './ConfigsTable.css'
 import formatDate from "../utils/dateTimeFormat";
-import {ExclamationCircleFilled} from "@ant-design/icons";
-import EditConfigValueModal from "./EditConfigValueModal";
+import {ArrowLeftOutlined, MoreOutlined} from "@ant-design/icons";
+import {Config} from "../utils/apiClient";
 
-const testConfigs: Config[] = [
-    new Date(),
-    new Date(2023, 2, 18, 16, 50),
-    new Date(2023, 2, 18, 20, 25),
-    new Date(2023, 2, 20, 16, 25),
-    new Date(2023, 5, 18, 16, 25),
-    new Date(2025, 2, 18, 16, 25),
-].map((x, i) => ({name: "config-name" + i, updated: x}))
-
-const testJsonValue = JSON.stringify({
-    position: {
-        x: 10,
-        y: 20
-    },
-    valid: true,
-    topology: [
-        {
-            name: "index1",
-            address: "http://localhost"
-        }
-    ]
-}, null, 2);
-
-
-interface Config {
-    name: string;
-    updated: Date;
-}
-
-const showConfirm = () => {
-    Modal.confirm({
-        title: 'Do you want to delete this item?',
-        icon: <ExclamationCircleFilled/>,
-        content: 'Some descriptions',
-        onOk() {
-            console.log('OK');
-        },
-        onCancel() {
-            console.log('Cancel');
-        },
-    });
-};
-
-function buildColumns(showEdit: (configName: string) => void) {
+function buildColumns(onConfigSelect: (config: Config) => any, onBackClick: () => any) {
     const columns: ColumnsType<Config> = [
         {
             title: 'Config name',
             dataIndex: 'name',
-            key: 'name',
-            render: name => (<a className="configNameLink" onClick={() => showEdit(name)}>{name}</a>)
+            render: (name, config) => {
+                if (config.isEmpty())
+                    return (<Button type="text" onClick={onBackClick}><ArrowLeftOutlined/></Button>);
+                return (<a className="configNameLink" onClick={() => onConfigSelect(config)}>{name}</a>);
+            }
         },
         {
             title: 'Last updated',
             dataIndex: 'updated',
             key: 'updated',
             align: "right",
-            render: formatDate
+            render: (date, config) => config.isEmpty() ? <></> : formatDate(date)
         },
         {
             title: "Action",
-            key: "action",
             align: "right",
-            render: () => <Button danger onClick={showConfirm} className="ignore-parent-click">Delete</Button>,
+            render: (_, config) => {
+                if (config.isEmpty())
+                    return <></>
+                return (
+                    <Dropdown trigger={["click"]}>
+                        <Button type="text"><MoreOutlined/></Button>
+                    </Dropdown>
+                );
+            },
             width: '10%'
         }
     ];
@@ -76,26 +43,35 @@ function buildColumns(showEdit: (configName: string) => void) {
     return columns;
 }
 
-function ConfigsTable() {
-    const [configName, setConfigName] = useState<string | null>()
-    const columns = buildColumns(setConfigName)
+function ConfigsTable({path, configs, onConfigSelect, onBackClick}: Props) {
+    const columns = buildColumns(onConfigSelect, onBackClick);
+    if (path.length > 0)
+        configs = [Config.Empty, ...configs];
 
     return (
         <>
-            <EditConfigValueModal
-                open={configName != null}
-                onClose={() => setConfigName(null)}
-                config={{zone: "default", key: configName ?? '', value: testJsonValue}}
-            />
             <Table
+                rowKey={(x) => x.name}
                 className="configsTable"
                 columns={columns}
-                dataSource={testConfigs}
+                dataSource={configs}
                 size="middle"
-                pagination={false}
+                pagination={{
+                    position: ["topRight", "bottomRight"],
+                    hideOnSinglePage: true,
+                    defaultPageSize: 10,
+                    showSizeChanger: true
+                }}
             />
         </>
     )
+}
+
+interface Props {
+    path: string[];
+    configs: Config[];
+    onConfigSelect: (config: Config) => any;
+    onBackClick: () => any;
 }
 
 export default ConfigsTable;

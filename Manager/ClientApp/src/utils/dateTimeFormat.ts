@@ -30,3 +30,8 @@ export default function formatDate(date: Date): string {
         return toTimeUnit(diff, MONTH, "month")
     return toTimeUnit(diff, YEAR, "year")
 }
+
+export function getRandomDate() {
+    const newDate = Date.now() - Math.random() * 10e10 % YEAR;
+    return new Date(newDate);
+}
