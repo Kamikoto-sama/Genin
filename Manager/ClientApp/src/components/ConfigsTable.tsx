@@ -1,9 +1,9 @@
-﻿import {Button, Dropdown, Table} from "antd";
+﻿import {Button, Dropdown, MenuProps, Table} from "antd";
 import React from "react";
 import type {ColumnsType} from 'antd/es/table';
 import './ConfigsTable.css'
 import formatDate from "../utils/dateTimeFormat";
-import {ArrowLeftOutlined, MoreOutlined} from "@ant-design/icons";
+import {ArrowLeftOutlined, DeleteOutlined, MoreOutlined} from "@ant-design/icons";
 import {Config} from "../utils/apiClient";
 
 function buildColumns(onConfigSelect: (config: Config) => any, onBackClick: () => any) {
@@ -28,10 +28,17 @@ function buildColumns(onConfigSelect: (config: Config) => any, onBackClick: () =
             title: "Action",
             align: "right",
             render: (_, config) => {
-                if (config.isEmpty())
-                    return <></>
+                if (config.isEmpty()) return <></>;
+                const items: MenuProps['items'] = [
+                    {
+                        key: 1,
+                        label: 'Delete',
+                        danger: true,
+                        icon: <DeleteOutlined/>
+                    }
+                ]
                 return (
-                    <Dropdown trigger={["click"]}>
+                    <Dropdown trigger={["click"]} menu={{items}}>
                         <Button type="text"><MoreOutlined/></Button>
                     </Dropdown>
                 );
@@ -51,7 +58,7 @@ function ConfigsTable({path, configs, onConfigSelect, onBackClick}: Props) {
     return (
             <Table
                 rowKey={(x) => x.name}
-                className="configsTable"
+                className="full-width"
                 columns={columns}
                 dataSource={configs}
                 size="middle"

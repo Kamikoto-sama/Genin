@@ -1,20 +1,31 @@
-﻿import {Modal} from "antd";
+﻿import {Modal, Space, Typography} from "antd";
 import React from "react";
+import ZoneSelect from "./ZoneSelect";
+import Search from "antd/es/input/Search";
 
-function CreateZoneModal({open, onClose}: { open: boolean, onClose: () => void }) {
+function CreateZoneModal({onClose}: Props) {
 
     return (
         <Modal
             title="Create zone"
-            open={open}
+            open={true}
             onCancel={onClose}
             okText="Create"
         >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+            <Space direction="vertical" size="large" className="full-width">
+                <Search placeholder="New zone name"/>
+                <Space>
+                    <Typography.Text strong>Parent zone</Typography.Text>
+                    <ZoneSelect/>
+                </Space>
+            </Space>
         </Modal>
     )
+}
+
+
+interface Props {
+    onClose: () => any
 }
 
 export default CreateZoneModal;
