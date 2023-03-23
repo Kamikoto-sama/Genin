@@ -49,7 +49,6 @@ function ConfigsTable({path, configs, onConfigSelect, onBackClick}: Props) {
         configs = [Config.Empty, ...configs];
 
     return (
-        <>
             <Table
                 rowKey={(x) => x.name}
                 className="configsTable"
@@ -63,7 +62,6 @@ function ConfigsTable({path, configs, onConfigSelect, onBackClick}: Props) {
                     showSizeChanger: true
                 }}
             />
-        </>
     )
 }
 

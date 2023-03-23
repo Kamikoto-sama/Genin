@@ -3,10 +3,12 @@ import ConfigsTable from "./ConfigsTable";
 import {Space, Typography} from "antd";
 import React, {useEffect, useState} from "react";
 import {ApiClient, Config} from "../utils/apiClient";
+import EditConfigModal from "./EditConfigModal";
 
 function ConfigsView({zone}: Props) {
     const [configs, setConfigs] = useState<Config[]>([]);
-    const [path, setPath] = useState<string[]>([])
+    const [path, setPath] = useState<string[]>([]);
+    const [editConfig, setEditConfig] = useState<Config | null>(null);
 
     useEffect(() => {
         if (!zone)
@@ -16,7 +18,14 @@ function ConfigsView({zone}: Props) {
         ApiClient.getConfigs(zone, []).then(x => setConfigs(x));
     }, [zone])
 
-    async function selectConfig(newPath: string[]) {
+    async function selectConfig(config: Config) {
+        if (!config.isValue)
+            await changePath(config.path);
+        else
+            setEditConfig(config);
+    }
+
+    async function changePath(newPath: string[]) {
         if (!zone)
             return;
 
@@ -32,12 +41,13 @@ function ConfigsView({zone}: Props) {
         return <Typography.Text>Select zone</Typography.Text>;
     return (
         <Space direction="vertical" size="large" className="full-width">
-            <ConfigRoute zone={zone} path={path} onClick={i => selectConfig(path.slice(0, i))}/>
+            {editConfig && <EditConfigModal onClose={() => setEditConfig(null)} config={editConfig}/>}
+            <ConfigRoute zone={zone} path={path} onClick={i => changePath(path.slice(0, i))}/>
             <ConfigsTable
                 path={path}
                 configs={configs}
-                onConfigSelect={(c) => selectConfig(c.path)}
-                onBackClick={() => selectConfig(path.slice(0, path.length - 1))}
+                onConfigSelect={selectConfig}
+                onBackClick={() => changePath(path.slice(0, path.length - 1))}
             />
         </Space>
     )
