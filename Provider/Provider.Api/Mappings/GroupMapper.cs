@@ -30,4 +30,6 @@ public static class GroupMapper
                 }
         };
     }
+
+    public static GroupDto[] ToGroupDto(GroupModel[] groupModels) => groupModels.Select(ToGroupDto).ToArray();
 }

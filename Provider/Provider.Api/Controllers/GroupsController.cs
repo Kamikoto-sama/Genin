@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Common.Api;
 using Microsoft.AspNetCore.Mvc;
-using Provider.Api.Data.Models;
 using Provider.Api.Mappings;
 using Provider.Api.Services;
 using Provider.Api.Validations;
@@ -30,8 +29,8 @@ public class GroupsController : ApiController
         HandleAsync(() => groupService.Get(groupName), GroupMapper.ToGroupDto);
 
     [HttpGet("all")]
-    public Task<ActionResult<GroupModel[]>> GetAll() =>
-        HandleAsync(() => groupService.GetAll());
+    public Task<ActionResult<GroupDto[]>> GetAll() =>
+        HandleAsync(() => groupService.GetAll(), GroupMapper.ToGroupDto);
 
     [Validate<GroupNameValidator, string>(nameof(groupName))]
     [HttpPost("{groupName}/updateName")]

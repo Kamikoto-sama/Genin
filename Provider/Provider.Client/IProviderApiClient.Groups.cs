@@ -6,13 +6,13 @@ namespace Provider.Client;
 public partial interface IProviderApiClient
 {
     [Post("/api/groups/create/{name}")]
-    Task<ApiResponse<int>> CreateGroup(string name, string? parentName);
+    Task<IApiResponse> CreateGroup(string name, string? parentName);
 
     [Get("/api/groups/{groupName}")]
-    Task<ApiResponse<GroupDto>> GetGroup(string groupName);
+    Task<IApiResponse<GroupDto>> GetGroup(string groupName);
 
     [Get("/api/groups/all")]
-    Task<ApiResponse<GroupDto[]>> GetAllGroups();
+    Task<IApiResponse<GroupDto[]>> GetAllGroups();
 
     [Post("/api/groups/{groupName}/updateName")]
     Task<IApiResponse> UpdateGroupName(string groupName, string newName);
