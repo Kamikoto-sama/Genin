@@ -7,15 +7,15 @@ import CreateZoneModal from "./components/CreateZoneModal";
 
 const App = () => {
     const [zone, setZone] = useState<string>();
-    const [createZone, setCreateZone] = useState(true);
+    const [createZone, setCreateZone] = useState(false);
 
     return (
         <ConfigProvider theme={{algorithm: theme.darkAlgorithm}}>
-            {createZone && <CreateZoneModal onClose={() => setCreateZone(false)}/>}
+            <CreateZoneModal open={createZone} onClose={() => setCreateZone(false)}/>
             <Layout className="bg-none">
                 <Space size="large" direction="vertical">
                     <Layout.Header>
-                        <ZoneSelect onSelect={setZone} onCreateZone={() => setCreateZone(true)}/>
+                        <ZoneSelect onChange={setZone} onCreateZone={() => setCreateZone(true)}/>
                     </Layout.Header>
                     <Layout.Content>
                         <Row>

@@ -41,7 +41,7 @@ function ConfigsView({zone}: Props) {
         return <Typography.Text>Select zone</Typography.Text>;
     return (
         <Space direction="vertical" size="large" className="full-width">
-            {editConfig && <EditConfigModal onClose={() => setEditConfig(null)} config={editConfig}/>}
+            <EditConfigModal open={!!editConfig} onClose={() => setEditConfig(null)} config={editConfig}/>
             <ConfigRoute zone={zone} path={path} onClick={i => changePath(path.slice(0, i))}/>
             <ConfigsTable
                 path={path}

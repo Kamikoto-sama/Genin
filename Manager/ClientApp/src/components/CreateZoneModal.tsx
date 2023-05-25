@@ -1,30 +1,52 @@
-﻿import {Modal, Space, Typography} from "antd";
-import React from "react";
+﻿import {Form, Input, Modal} from "antd";
+import React, {useState} from "react";
 import ZoneSelect from "./ZoneSelect";
-import Search from "antd/es/input/Search";
 
-function CreateZoneModal({onClose}: Props) {
+function CreateZoneModal({open, onClose}: Props) {
+    const [form] = Form.useForm()
+    const [loading, setLoading] = useState(false);
+
+    function onCreate() {
+        setLoading(true);
+        form.validateFields()
+            .then(values => {
+                alert(`Created: ${JSON.stringify(values)}`)
+            })
+            .catch(error => {
+                alert(`Error: ${JSON.stringify(error)}`)
+            })
+            .finally(() => setLoading(false))
+    }
 
     return (
         <Modal
             title="Create zone"
-            open={true}
+            open={open}
             onCancel={onClose}
             okText="Create"
+            okButtonProps={{loading}}
+            onOk={onCreate}
         >
-            <Space direction="vertical" size="large" className="full-width">
-                <Search placeholder="New zone name"/>
-                <Space>
-                    <Typography.Text strong>Parent zone</Typography.Text>
+            <Form
+                form={form}
+                labelCol={{span: 7}}
+                wrapperCol={{span: 12}}
+                labelAlign="left"
+            >
+                <Form.Item label="New zone name" name="newZoneName"
+                           rules={[{required: true, message: "Zone name is required"}]}>
+                    <Input/>
+                </Form.Item>
+                <Form.Item label="Parent zone name" name="parentZoneName">
                     <ZoneSelect/>
-                </Space>
-            </Space>
+                </Form.Item>
+            </Form>
         </Modal>
     )
 }
 
-
 interface Props {
+    open: boolean;
     onClose: () => any
 }
 

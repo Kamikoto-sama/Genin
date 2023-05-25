@@ -1,4 +1,4 @@
-﻿import React, {useState} from "react";
+﻿import React, {useEffect, useState} from "react";
 import {Button, Divider, Modal, Select, Space, Typography} from "antd";
 import ConfigValueEditor, {ConfigValueFormat} from "./ConfigValueEditor";
 import {Config} from "../utils/apiClient";
@@ -30,10 +30,12 @@ function formatValue(format: ConfigValueFormat, value: string): FormatResult {
     }
 }
 
-function EditConfigModal({onClose, config}: Props) {
+function EditConfigModal({open, onClose, config}: Props) {
     const [configFormat, setConfigFormat] = useState<ConfigValueFormat>('Plain text')
-    const [configValue, setConfigValue] = useState(config.value ?? '')
+    const [configValue, setConfigValue] = useState(config?.value ?? '')
     const [error, setError] = useState<string>();
+
+    useEffect(() => setConfigValue(config?.value ?? ''), [config])
 
     function formatConfigValue() {
         const result = formatValue(configFormat, configValue);
@@ -48,22 +50,23 @@ function EditConfigModal({onClose, config}: Props) {
     return (
         <Modal
             title="Edit config value"
-            open={true}
+            open={open}
             onCancel={onClose}
             okText="Save"
-            okButtonProps={{disabled: configValue === config.value}}
+            okButtonProps={{disabled: configValue === config?.value}}
             destroyOnClose={true}
         >
             <div>
                 <Text strong>Zone: </Text>
                 <Text code>config.zone</Text><br/>
                 <Text strong>Key: </Text>
-                <Text code>{config.path.join("/")}</Text>
+                <Text code>{config?.path.join("/")}</Text>
             </div>
             <Divider style={{margin: '5px 0 10px'}}/>
             <Space direction="vertical" className="full-width">
                 <Space>
-                    <Select style={{minWidth: '100px'}} options={formats} value={configFormat} onChange={setConfigFormat}/>
+                    <Select style={{minWidth: '100px'}} options={formats} value={configFormat}
+                            onChange={setConfigFormat}/>
                     {configFormat !== 'Plain text' && <Button onClick={formatConfigValue}>Format</Button>}
                 </Space>
                 <ConfigValueEditor
@@ -79,8 +82,9 @@ function EditConfigModal({onClose, config}: Props) {
 }
 
 interface Props {
+    open: boolean;
     onClose: () => void;
-    config: Config;
+    config: Config | null;
 }
 
 export default EditConfigModal;

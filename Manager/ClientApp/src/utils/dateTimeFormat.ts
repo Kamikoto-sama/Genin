@@ -22,6 +22,8 @@ export default function formatDate(date: Date): string {
         return toTimeUnit(diff, MINUTE, "minute")
     if (diff < DAY)
         return toTimeUnit(diff, HOUR, "hour")
+    if (diff < WEEK && diff / DAY < 2)
+        return "Yesterday"
     if (diff < WEEK)
         return toTimeUnit(diff, DAY, "day")
     if (diff < MONTH)
