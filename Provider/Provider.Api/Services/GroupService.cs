@@ -16,13 +16,13 @@ public class GroupService
         this.dbContext = dbContext;
     }
 
-    public async Task<Result> CreateAsync(string groupName, string? parentName)
+    public async Task<Result> Create(string groupName, string? parentName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
         if (group != null)
             return GroupError.AlreadyExists();
 
-        var parentResult = await GetParentAsync(parentName);
+        var parentResult = await GetParent(parentName);
         if (parentResult.IsFailed)
             return parentResult.ToResult();
 
@@ -33,9 +33,9 @@ public class GroupService
         return Result.Ok();
     }
 
-    public async Task<Result> SetParentAsync(string groupName, string parentName)
+    public async Task<Result> SetParent(string groupName, string? parentName)
     {
-        var parentResult = await GetParentAsync(parentName);
+        var parentResult = await GetParent(parentName);
         if (parentResult.IsFailed)
             return parentResult.ToResult();
 
@@ -49,7 +49,7 @@ public class GroupService
         return Result.Ok();
     }
 
-    private async Task<Result<GroupModel?>> GetParentAsync(string? parentName)
+    private async Task<Result<GroupModel?>> GetParent(string? parentName)
     {
         GroupModel? parent = null;
         if (parentName == null)
@@ -61,13 +61,13 @@ public class GroupService
         return parent;
     }
 
-    public async Task<Result<GroupModel>> GetAsync(string groupName)
+    public async Task<Result<GroupModel>> Get(string groupName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
         return group == null ? GroupError.NotFound() : group;
     }
 
-    public async Task<Result> UpdateNameAsync(string groupName, string newName)
+    public async Task<Result> UpdateName(string groupName, string newName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
         if (group == null)
@@ -82,7 +82,7 @@ public class GroupService
         return Result.Ok();
     }
 
-    public async Task<Result> DeleteAsync(string groupName)
+    public async Task<Result> Delete(string groupName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
         if (group == null)
@@ -94,7 +94,7 @@ public class GroupService
         return Result.Ok();
     }
 
-    public async Task<Result<GroupModel[]>> GetAllAsync()
+    public async Task<Result<GroupModel[]>> GetAll()
     {
         var groups = await dbContext.Groups.ToArrayAsync();
         return groups;
