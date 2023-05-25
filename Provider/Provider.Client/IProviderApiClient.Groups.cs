@@ -5,21 +5,24 @@ namespace Provider.Client;
 
 public partial interface IProviderApiClient
 {
-    [Post("/api/group/{groupName}/create")]
-    public Task<ApiResponse<int>> CreateGroup(string groupName);
+    [Post("/api/groups/create/{name}")]
+    Task<ApiResponse<int>> CreateGroup(string name, string? parentName);
 
-    [Get("/api/group/{groupName}")]
-    public Task<ApiResponse<GroupDto>> GetGroup(string groupName);
+    [Get("/api/groups/{groupName}")]
+    Task<ApiResponse<GroupDto>> GetGroup(string groupName);
 
-    [Post("/api/group/{groupName}/updateName")]
-    public Task<IApiResponse> UpdateGroupName(string groupName, string newName);
+    [Get("/api/groups/all")]
+    Task<ApiResponse<GroupDto[]>> GetAllGroups();
 
-    [Post("/api/group/{groupName}/setParent")]
-    public Task<IApiResponse> SetGroupParent(string groupName, int parentId);
+    [Post("/api/groups/{groupName}/updateName")]
+    Task<IApiResponse> UpdateGroupName(string groupName, string newName);
 
-    [Post("/api/group/{groupName}/removeParent")]
-    public Task<IApiResponse> RemoveGroupParent(string groupName);
+    [Post("/api/groups/{groupName}/setParent")]
+    Task<IApiResponse> SetGroupParent(string groupName, string parentName);
 
-    [Post("/api/group/{groupName}/delete")]
-    public Task<IApiResponse> DeleteGroup(string groupName);
+    [Post("/api/groups/{groupName}/removeParent")]
+    Task<IApiResponse> RemoveGroupParent(string groupName);
+
+    [Post("/api/groups/{groupName}/delete")]
+    Task<IApiResponse> DeleteGroup(string groupName);
 }

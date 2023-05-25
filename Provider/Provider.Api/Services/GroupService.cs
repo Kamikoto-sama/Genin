@@ -1,5 +1,6 @@
 ﻿using Common.Results;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using Provider.Api.Data;
 using Provider.Api.Data.Models;
 using Provider.Api.Mappings;
@@ -15,26 +16,26 @@ public class GroupService
         this.dbContext = dbContext;
     }
 
-    public async Task<Result<int>> CreateAsync(string groupName, int? parentId)
+    public async Task<Result> CreateAsync(string groupName, string? parentName)
     {
         var group = await dbContext.FindGroupAsync(groupName);
         if (group != null)
             return GroupError.AlreadyExists();
 
-        var parentResult = await GetParentAsync(parentId);
+        var parentResult = await GetParentAsync(parentName);
         if (parentResult.IsFailed)
             return parentResult.ToResult();
 
         group = GroupMapper.ToGroupModel(groupName, parentResult.Value);
-        var entry = await dbContext.Groups.AddAsync(group);
+        await dbContext.Groups.AddAsync(group);
         await dbContext.SaveChangesAsync();
 
-        return entry.Entity.Id;
+        return Result.Ok();
     }
 
-    public async Task<Result> SetParentAsync(string groupName, int? parentId)
+    public async Task<Result> SetParentAsync(string groupName, string parentName)
     {
-        var parentResult = await GetParentAsync(parentId);
+        var parentResult = await GetParentAsync(parentName);
         if (parentResult.IsFailed)
             return parentResult.ToResult();
 
@@ -48,13 +49,13 @@ public class GroupService
         return Result.Ok();
     }
 
-    private async Task<Result<GroupModel?>> GetParentAsync(int? parentId)
+    private async Task<Result<GroupModel?>> GetParentAsync(string? parentName)
     {
         GroupModel? parent = null;
-        if (parentId == null)
+        if (parentName == null)
             return parent;
 
-        parent = await dbContext.Groups.FindAsync(parentId);
+        parent = await dbContext.Groups.SingleOrDefaultAsync(g => g.Name == parentName);
         if (parent == null)
             return GroupError.ParentNotFound();
         return parent;
@@ -91,6 +92,12 @@ public class GroupService
         await dbContext.SaveChangesAsync();
 
         return Result.Ok();
+    }
+
+    public async Task<Result<GroupModel[]>> GetAllAsync()
+    {
+        var groups = await dbContext.Groups.ToArrayAsync();
+        return groups;
     }
 }
 
