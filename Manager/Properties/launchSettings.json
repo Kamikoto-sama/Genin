@@ -2,7 +2,7 @@
   "profiles": {
     "Manager": {
       "commandName": "Project",
-      "applicationUrl": "https://localhost:7001",
+      "applicationUrl": "https://localhost:6001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"

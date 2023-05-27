@@ -45,6 +45,7 @@ internal class Program
 
     private static void ConfigureServices(WebApplicationBuilder appBuilder)
     {
+        appBuilder.WebHost.UseDefaultServiceProvider(options => options.ValidateOnBuild = true);
         var services = appBuilder.Services;
 
         var connectionString = appBuilder.Configuration.GetConnectionString("postgres");

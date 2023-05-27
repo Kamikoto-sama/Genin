@@ -1,3 +1,5 @@
+using Common;
+using Provider.Client;
 using Serilog;
 using Serilog.Events;
 
@@ -25,6 +27,11 @@ internal class Program
         ConfigureLogging(appBuilder);
     }
 
+    private static void ConfigureAppConfiguration(WebApplicationBuilder appBuilder)
+    {
+        appBuilder.Configuration.AddJsonFile("appsettings.private.json", true);
+    }
+
     private static void ConfigureLogging(WebApplicationBuilder appBuilder)
     {
         const string template = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
@@ -34,21 +41,25 @@ internal class Program
             .WriteTo.Console(outputTemplate: template));
     }
 
-    private static void ConfigureAppConfiguration(WebApplicationBuilder appBuilder)
-    {
-        appBuilder.Configuration.AddJsonFile("appsettings.private.json", true);
-    }
-
     private static void ConfigureServices(WebApplicationBuilder appBuilder)
     {
-        appBuilder.Services.AddControllers();
+        appBuilder.WebHost.UseDefaultServiceProvider(options => options.ValidateOnBuild = true);
+        var services = appBuilder.Services;
+
+        var providerOptions = appBuilder.Configuration.GetRequired<ProviderApiClientOptions>("ProviderApi");
+        services.AddProviderApiClient(providerOptions);
+
+        services.AddControllers();
+        services.AddCors();
     }
 
     private static void ConfigureApp(WebApplication app)
     {
+        app.UseHttpsRedirection();
         app.UseSerilogRequestLogging();
 
-        app.UseHttpsRedirection();
+        app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
         app.UseStaticFiles();
         app.UseRouting();
 

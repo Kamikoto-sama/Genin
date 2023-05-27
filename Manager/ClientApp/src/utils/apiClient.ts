@@ -1,5 +1,15 @@
 ﻿import {getRandomDate} from "./dateTimeFormat";
 
+export class Zone {
+    readonly name: string;
+    readonly parent?: string;
+
+    constructor(name: string, parent?: string) {
+        this.name = name;
+        this.parent = parent;
+    }
+}
+
 export class Config {
     static readonly Empty: Config = new Config("", new Date(0));
 
@@ -46,8 +56,9 @@ const test: Source = {
 
 export class ApiClient {
     static async getTopZones(): Promise<string[]> {
-        const zones = Object.keys(test);
-        return await request(zones);
+        const res = await fetch("https://localhost:6001/api/groups", {method: "GET"});
+        const zones: Zone[] = await res.json().then(g => g.map((x: any) => new Zone(x.name, x.parent)));
+        return zones.map(x => x.name);
     }
 
     static async getConfigs(zone: string, path: string[] = []): Promise<Config[]> {
