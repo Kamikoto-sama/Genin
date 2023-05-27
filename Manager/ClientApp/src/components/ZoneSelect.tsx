@@ -8,7 +8,7 @@ function ZoneSelect({onChange, onCreateZone}: Props) {
 
     useEffect(() => {
         ApiClient.getTopZones().then(x => setZones(x));
-    })
+    }, [])
 
     const options = zones && zones.map(x => ({value: x, label: x})) || []
     return (
