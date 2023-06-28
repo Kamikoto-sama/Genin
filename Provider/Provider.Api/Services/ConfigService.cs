@@ -17,7 +17,7 @@ public class ConfigService
         this.dbContext = dbContext;
     }
 
-    public async Task<Result> AddAsync(string zoneName, IEnumerable<ConfigAddDto> configDtos)
+    public async Task<Result> Add(string zoneName, IEnumerable<ConfigAddDto> configDtos)
     {
         var configs = configDtos.Select(ConfigMapper.ToConfigModel).ToArray();
 
@@ -33,7 +33,7 @@ public class ConfigService
         return Result.Ok();
     }
 
-    public async Task<Result<ConfigDto[]>> GetAsync(string zoneName, string[] keys)
+    public async Task<Result<ConfigDto[]>> Get(string zoneName, string[] keys)
     {
         var configs = new Dictionary<string, ConfigDto>();
         do
@@ -50,6 +50,28 @@ public class ConfigService
 
             zoneName = zone.Parent.Name;
         } while (configs.Count < keys.Length);
+
+        return configs.Values.ToArray();
+    }
+
+    public async Task<Result<ConfigDto[]>> GetAll(string zoneName)
+    {
+        var configs = new Dictionary<string, ConfigDto>();
+
+        while (true)
+        {
+            var zone = await dbContext.LoadAllConfigs(zoneName);
+            if (zone == null)
+                return ConfigError.ZoneNotFound();
+
+            foreach (var config in zone.Configs)
+                configs.TryAdd(config.Key, config.ToConfigDto(zone));
+
+            if (zone.Parent == null)
+                break;
+
+            zoneName = zone.Parent.Name;
+        }
 
         return configs.Values.ToArray();
     }

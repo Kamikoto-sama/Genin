@@ -16,6 +16,13 @@ public static class ConfigQueries
     {
         return dbContext.Zones
             .Include(zone => zone.Configs.Where(config => keys.Any(query => config.Key.MatchesLQuery(query))))
-            .FirstOrDefaultAsync(x => x.Name == zoneName);
+            .FirstOrDefaultAsync(zone => zone.Name == zoneName);
+    }
+
+    public static Task<ZoneModel?> LoadAllConfigs(this AppDbContext dbContext, string zoneName)
+    {
+        return dbContext.Zones
+            .Include(zone => zone.Configs)
+            .FirstOrDefaultAsync(zone => zone.Name == zoneName);
     }
 }

@@ -20,7 +20,7 @@ public class ConfigsController : ApiController
     [HttpPost("add")]
     [Validate<ConfigAddValidator, ConfigAddDto[]>(nameof(dto))]
     public Task<ActionResult> Add(string zoneName, [FromBody] ConfigAddDto[] dto) =>
-        HandleAsync(() => configService.AddAsync(zoneName, dto));
+        HandleAsync(() => configService.Add(zoneName, dto));
 
     [HttpPost("updateValue")]
     public Task<ActionResult> UpdateValue(string zoneName, [FromBody] ConfigUpdateDto dto) =>
@@ -28,7 +28,11 @@ public class ConfigsController : ApiController
 
     [HttpGet, HttpPost]
     public Task<ActionResult<ConfigDto[]>> Get(string zoneName, [FromBody] string[] keys) =>
-        HandleAsync(() => configService.GetAsync(zoneName, keys));
+        HandleAsync(() => configService.Get(zoneName, keys));
+
+    [HttpGet("all")]
+    public Task<ActionResult<ConfigDto[]>> GetAll(string zoneName) =>
+        HandleAsync(() => configService.GetAll(zoneName));
 
     [HttpPost("delete")]
     public Task<ActionResult> Delete(string zoneName, [FromBody] string[] keys) =>
