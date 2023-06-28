@@ -21,7 +21,6 @@ function buildColumns(onConfigSelect: (config: Config) => any, onBackClick: () =
             title: 'Last updated',
             dataIndex: 'updated',
             key: 'updated',
-            align: "right",
             render: (date, config) => config.isEmpty() ? <></> : formatDate(date)
         },
         {

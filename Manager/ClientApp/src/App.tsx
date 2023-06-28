@@ -3,7 +3,7 @@ import {Col, ConfigProvider, Layout, Row, Space, theme} from 'antd';
 import 'antd/dist/reset.css';
 import ZoneSelect from "./components/ZoneSelect";
 import ConfigsView from "./components/ConfigsView";
-import CreateZoneModal from "./components/CreateZoneModal";
+import ZoneCreateModal from "./components/ZoneCreateModal";
 
 const App = () => {
     const [zone, setZone] = useState<string>();
@@ -11,7 +11,7 @@ const App = () => {
 
     return (
         <ConfigProvider theme={{algorithm: theme.darkAlgorithm}}>
-            <CreateZoneModal open={createZone} onClose={() => setCreateZone(false)}/>
+            <ZoneCreateModal open={createZone} onClose={() => setCreateZone(false)}/>
             <Layout className="bg-none">
                 <Space size="large" direction="vertical">
                     <Layout.Header>

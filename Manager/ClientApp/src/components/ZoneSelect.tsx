@@ -3,7 +3,13 @@ import {Button, Divider, Select, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {ApiClient} from "../utils/apiClient";
 
-function ZoneSelect({onChange, onCreateZone}: Props) {
+interface Props {
+    onCreateZone?: () => void;
+    onChange?: (zone: string) => void;
+    allowClear?: boolean;
+}
+
+export default function ZoneSelect({onChange, onCreateZone, allowClear}: Props) {
     const [zones, setZones] = useState<string[]>([]);
 
     useEffect(() => {
@@ -19,7 +25,7 @@ function ZoneSelect({onChange, onCreateZone}: Props) {
             className="zone-select"
             options={options}
             onChange={onChange}
-            allowClear={true}
+            allowClear={allowClear}
             dropdownRender={(menu) => (
                 <>
                     {menu}
@@ -39,15 +45,3 @@ function ZoneSelect({onChange, onCreateZone}: Props) {
         />
     )
 }
-
-interface Props {
-    onCreateZone?: () => void;
-    onChange?: (zone: string) => void;
-}
-
-interface State {
-    zone?: string;
-    zones?: string[];
-}
-
-export default ZoneSelect;

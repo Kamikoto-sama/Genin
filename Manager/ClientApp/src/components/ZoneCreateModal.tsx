@@ -2,7 +2,12 @@
 import React, {useState} from "react";
 import ZoneSelect from "./ZoneSelect";
 
-function CreateZoneModal({open, onClose}: Props) {
+interface Props {
+    open: boolean;
+    onClose: () => any
+}
+
+export default function ZoneCreateModal({open, onClose}: Props) {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false);
 
@@ -38,16 +43,9 @@ function CreateZoneModal({open, onClose}: Props) {
                     <Input/>
                 </Form.Item>
                 <Form.Item label="Parent zone name" name="parentZoneName">
-                    <ZoneSelect/>
+                    <ZoneSelect allowClear={true}/>
                 </Form.Item>
             </Form>
         </Modal>
     )
 }
-
-interface Props {
-    open: boolean;
-    onClose: () => any
-}
-
-export default CreateZoneModal;
