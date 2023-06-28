@@ -6,16 +6,16 @@ namespace Provider.Api.Services;
 
 public static class ConfigQueries
 {
-    public static Task<GroupModel?> LoadConfigsByPrefix(this AppDbContext dbContext, string groupName, IEnumerable<string> keyPrefixes)
+    public static Task<ZoneModel?> LoadConfigsByPrefix(this AppDbContext dbContext, string zoneName, IEnumerable<string> keyPrefixes)
     {
         var keys = keyPrefixes.Select(x => x + ".*").ToArray();
-        return dbContext.LoadConfigs(groupName, keys);
+        return dbContext.LoadConfigs(zoneName, keys);
     }
 
-    public static Task<GroupModel?> LoadConfigs(this AppDbContext dbContext, string groupName, params string[] keys)
+    public static Task<ZoneModel?> LoadConfigs(this AppDbContext dbContext, string zoneName, params string[] keys)
     {
-        return dbContext.Groups
-            .Include(group => group.Configs.Where(config => keys.Any(query => config.Key.MatchesLQuery(query))))
-            .FirstOrDefaultAsync(x => x.Name == groupName);
+        return dbContext.Zones
+            .Include(zone => zone.Configs.Where(config => keys.Any(query => config.Key.MatchesLQuery(query))))
+            .FirstOrDefaultAsync(x => x.Name == zoneName);
     }
 }

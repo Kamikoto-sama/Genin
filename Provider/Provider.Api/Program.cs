@@ -51,7 +51,7 @@ internal class Program
         var connectionString = appBuilder.Configuration.GetConnectionString("postgres");
         services.AddDbContext<AppDbContext>(builder => builder.UseNpgsql(connectionString));
 
-        services.AddScoped<GroupService>();
+        services.AddScoped<ZoneService>();
         services.AddScoped<ConfigService>();
 
         services.AddControllers();

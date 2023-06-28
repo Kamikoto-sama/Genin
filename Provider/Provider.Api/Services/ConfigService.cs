@@ -17,65 +17,65 @@ public class ConfigService
         this.dbContext = dbContext;
     }
 
-    public async Task<Result> AddAsync(string groupName, IEnumerable<ConfigAddDto> configDtos)
+    public async Task<Result> AddAsync(string zoneName, IEnumerable<ConfigAddDto> configDtos)
     {
         var configs = configDtos.Select(ConfigMapper.ToConfigModel).ToArray();
 
-        var group = await dbContext.LoadConfigsByPrefix(groupName, configs.Select(x => x.Key.ToString()));
-        if (group == null)
-            return ConfigError.GroupNotFound();
-        if (group.Configs.Count > 0)
-            return ConfigError.KeysConflict(group.Configs.Select(x => x.Key));
+        var zone = await dbContext.LoadConfigsByPrefix(zoneName, configs.Select(x => x.Key.ToString()));
+        if (zone == null)
+            return ConfigError.ZoneNotFound();
+        if (zone.Configs.Count > 0)
+            return ConfigError.KeysConflict(zone.Configs.Select(x => x.Key));
 
-        group.Configs.AddRange(configs);
+        zone.Configs.AddRange(configs);
         await dbContext.SaveChangesAsync();
 
         return Result.Ok();
     }
 
-    public async Task<Result<ConfigDto[]>> GetAsync(string groupName, string[] keys)
+    public async Task<Result<ConfigDto[]>> GetAsync(string zoneName, string[] keys)
     {
         var configs = new Dictionary<string, ConfigDto>();
         do
         {
-            var group = await dbContext.LoadConfigsByPrefix(groupName, keys);
-            if (group == null)
-                return ConfigError.GroupNotFound();
+            var zone = await dbContext.LoadConfigsByPrefix(zoneName, keys);
+            if (zone == null)
+                return ConfigError.ZoneNotFound();
 
-            foreach (var config in group.Configs)
-                configs.TryAdd(config.Key, config.ToConfigDto(group));
+            foreach (var config in zone.Configs)
+                configs.TryAdd(config.Key, config.ToConfigDto(zone));
 
-            if (group.Parent == null)
+            if (zone.Parent == null)
                 break;
 
-            groupName = group.Parent.Name;
+            zoneName = zone.Parent.Name;
         } while (configs.Count < keys.Length);
 
         return configs.Values.ToArray();
     }
 
-    public async Task<Result> UpdateValueAsync(string groupName, ConfigUpdateDto dto)
+    public async Task<Result> UpdateValueAsync(string zoneName, ConfigUpdateDto dto)
     {
         var keys = dto.Key.Replace("/", ".");
-        var group = await dbContext.LoadConfigs(groupName, keys);
-        if (group == null)
-            return ConfigError.GroupNotFound();
+        var zone = await dbContext.LoadConfigs(zoneName, keys);
+        if (zone == null)
+            return ConfigError.ZoneNotFound();
 
-        var config = group.Configs.Single();
+        var config = zone.Configs.Single();
         config.Value = dto.Value;
         await dbContext.SaveChangesAsync();
 
         return Result.Ok();
     }
 
-    public async Task<Result> DeleteAsync(string groupName, string[] keys)
+    public async Task<Result> DeleteAsync(string zoneName, string[] keys)
     {
         keys = keys.Select(x => x.Replace("/", ".")).ToArray();
-        var group = await dbContext.LoadConfigs(groupName, keys);
-        if (group == null)
-            return ConfigError.GroupNotFound();
+        var zone = await dbContext.LoadConfigs(zoneName, keys);
+        if (zone == null)
+            return ConfigError.ZoneNotFound();
 
-        group.Configs.Clear();
+        zone.Configs.Clear();
         await dbContext.SaveChangesAsync();
 
         return Result.Ok();
@@ -86,11 +86,11 @@ public class ConfigError
 {
     public enum Code
     {
-        GroupNotFound = 1,
+        ZoneNotFound = 1,
         KeysConflict
     }
 
-    public static Result GroupNotFound() => ResultHelper.InvalidOperation(Code.GroupNotFound);
+    public static Result ZoneNotFound() => ResultHelper.InvalidOperation(Code.ZoneNotFound);
 
     public static Result KeysConflict(IEnumerable<LTree> storedKeys) =>
         ResultHelper.InvalidOperation(Code.KeysConflict, $"Existing keys: {storedKeys.ToStringJoin()}");

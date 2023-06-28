@@ -6,8 +6,8 @@ using Provider.Dto.Configs;
 
 namespace Provider.Api.Controllers;
 
-[Route("api/{groupName}/configs")]
-[Validate<GroupNameValidator, string>("groupName")]
+[Route("api/{zoneName}/configs")]
+[Validate<ZoneNameValidator, string>("zoneName")]
 public class ConfigsController : ApiController
 {
     private readonly ConfigService configService;
@@ -19,18 +19,18 @@ public class ConfigsController : ApiController
 
     [HttpPost("add")]
     [Validate<ConfigAddValidator, ConfigAddDto[]>(nameof(dto))]
-    public Task<ActionResult> Add(string groupName, [FromBody] ConfigAddDto[] dto) =>
-        HandleAsync(() => configService.AddAsync(groupName, dto));
+    public Task<ActionResult> Add(string zoneName, [FromBody] ConfigAddDto[] dto) =>
+        HandleAsync(() => configService.AddAsync(zoneName, dto));
 
     [HttpPost("updateValue")]
-    public Task<ActionResult> UpdateValue(string groupName, [FromBody] ConfigUpdateDto dto) =>
-        HandleAsync(() => configService.UpdateValueAsync(groupName, dto));
+    public Task<ActionResult> UpdateValue(string zoneName, [FromBody] ConfigUpdateDto dto) =>
+        HandleAsync(() => configService.UpdateValueAsync(zoneName, dto));
 
     [HttpGet, HttpPost]
-    public Task<ActionResult<ConfigDto[]>> Get(string groupName, [FromBody] string[] keys) =>
-        HandleAsync(() => configService.GetAsync(groupName, keys));
+    public Task<ActionResult<ConfigDto[]>> Get(string zoneName, [FromBody] string[] keys) =>
+        HandleAsync(() => configService.GetAsync(zoneName, keys));
 
     [HttpPost("delete")]
-    public Task<ActionResult> Delete(string groupName, [FromBody] string[] keys) =>
-        HandleAsync(() => configService.DeleteAsync(groupName, keys));
+    public Task<ActionResult> Delete(string zoneName, [FromBody] string[] keys) =>
+        HandleAsync(() => configService.DeleteAsync(zoneName, keys));
 }

@@ -5,14 +5,13 @@ namespace Provider.Api.Mappings;
 
 public static class ConfigMapper
 {
-    public static ConfigDto ToConfigDto(this ConfigModel configModel, GroupModel groupModel)
+    public static ConfigDto ToConfigDto(this ConfigModel configModel, ZoneModel zoneModel)
     {
         return new ConfigDto
         {
             Key = configModel.Key.ToString().Replace(".", "/"),
             Value = configModel.Value,
-            GroupName = groupModel.Name,
-            GroupId = groupModel.Id
+            ZoneName = zoneModel.Name,
         };
     }
 

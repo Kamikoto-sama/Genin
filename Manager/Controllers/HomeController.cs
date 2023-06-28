@@ -1,7 +1,7 @@
 ﻿using Common.Api;
 using Microsoft.AspNetCore.Mvc;
 using Provider.Client;
-using Provider.Dto.Groups;
+using Provider.Dto.Zones;
 
 namespace Manager.Controllers;
 
@@ -16,12 +16,12 @@ public class HomeController : ApiController
         this.providerApiClient = providerApiClient;
     }
 
-    [HttpGet("groups")]
-    public async Task<ActionResult> GetAllGroups()
+    [HttpGet("zones")]
+    public async Task<ActionResult> GetAllZones()
     {
-        var response = await providerApiClient.GetAllGroups();
+        var response = await providerApiClient.GetAllZones();
         if (response.IsSuccessStatusCode)
-            return Ok(response.Content ?? Array.Empty<GroupDto>());
+            return Ok(response.Content ?? Array.Empty<ZoneDto>());
         return BadRequest(response.Error);
     }
 }
